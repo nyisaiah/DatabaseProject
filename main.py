@@ -25,7 +25,7 @@ if st.button("Submit"):
             st.success(f"✅ Number {user_number} added successfully!")
 
 records, error = supabase.table("firstTable").select("*").execute()
-
+st.write("Hello World")
 if error and error[1]:  # Check for real errors before displaying
     st.error("❌ Failed to fetch records!")
 elif records:
