@@ -13,5 +13,5 @@ if st.session_state.show_service_form:
         cost = st.number_input("Cost", min_value=0.0, format="%.2f")
         
         submit_service = st.form_submit_button("Submit New Service")
-        if submit_service:
+        if submit_service and cost > 0:
             st.success(f"✅ Service '{service_name}' added successfully!")
