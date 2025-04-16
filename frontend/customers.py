@@ -1,24 +1,25 @@
 import streamlit as st
 from backend.customers_backend import add_customer, get_customers
+from backend.cars_backend import get_cars
 import pandas as pd
-from  frontend.utils import format_phone, format_customer
+from  frontend.utils import format_phone, format_customer, format_car
 
 
 
 
 def render():
     st.title("👥 Customers Page")
-    customer_list = get_customers() 
+    customer_list = get_customers()
+    car_list = get_cars()
     st.subheader("🔍 View Customers")
     if st.button("Load Customers"):
             df = pd.DataFrame(customer_list)
             df = df.rename(columns={
-            "custid": "Customer ID",
             "custfname": "First Name",
             "custlname": "Last Name",
             "custphonenumber": "Phone Number"
-        })
-            st.dataframe(df.style.hide(axis="index"))
+        }).drop(columns=['cust_id'])
+            st.dataframe(df, hide_index=True)
             
 
     st.subheader("➕ Add Customer")
@@ -47,12 +48,12 @@ def render():
 
     # Mock dropdown options (replace with real Supabase queries later)
     # customer_list = ["1: John Doe", "2: Jane Smith"]
-    car_list = ["10: ABC123 - Honda Civic", "11: XYZ789 - Toyota Camry"]
+    # car_list = ["10: ABC123 - Honda Civic", "11: XYZ789 - Toyota Camry"]
 
     with st.form("link_customer_car"):
         selected_customer = st.selectbox("Select Customer", customer_list, format_func=format_customer)
         print(selected_customer["cust_id"])
-        selected_car = st.selectbox("Select Car", car_list)
+        selected_car = st.selectbox("Select Car", car_list, format_func=format_car)
         linked = st.form_submit_button("Link")
         if linked:
             st.success(f"Linked {format_customer(selected_customer)} with {selected_car}.")

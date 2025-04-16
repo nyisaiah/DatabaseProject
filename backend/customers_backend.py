@@ -1,7 +1,7 @@
 from .supabase_client import supabase
 
 def get_customers():
-    response = supabase.table("customers").select('*').execute()
+    response = supabase.table("customers").select('*').order("custlname").execute()
     return response.data
 
 def add_customer(fName, lName, phoneNumber):
