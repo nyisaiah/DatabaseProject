@@ -31,7 +31,7 @@ def render():
             # === STEP 3: Select Date and Time ===
             st.subheader("Step 3: Select Date and Time")
             appointment_date = st.date_input("Appointment Date", None)
-            appointment_time = st.time_input("Appointment Time", value=time(10, 0))
+            appointment_time = st.time_input("Appointment Time", value=("hh:mm"))
             formatted_time = appointment_time.strftime("%I:%M %p")
 
             if appointment_time and appointment_date:
