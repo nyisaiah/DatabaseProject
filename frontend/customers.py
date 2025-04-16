@@ -1,5 +1,5 @@
 import streamlit as st
-from backend.customers_backend import add_customer, get_customers
+from backend.customers_backend import add_customer, get_customers, cust_with_car
 from backend.cars_backend import get_cars
 import pandas as pd
 from  frontend.utils import format_phone, format_customer, format_car
@@ -44,7 +44,7 @@ def render():
             else:
                 st.warning("Must fill out all fields")
 
-    st.subheader("🔗 Associate Customer with Car")
+    st.subheader("🔗 Associate Owner with Car")
 
     # Mock dropdown options (replace with real Supabase queries later)
     # customer_list = ["1: John Doe", "2: Jane Smith"]
@@ -56,4 +56,8 @@ def render():
         selected_car = st.selectbox("Select Car", car_list, format_func=format_car)
         linked = st.form_submit_button("Link")
         if linked:
-            st.success(f"Linked {format_customer(selected_customer)} with {selected_car}.")
+            try: 
+                cust_with_car(selected_customer["cust_id"],selected_car["car_id"])
+                st.success(f"Linked {format_customer(selected_customer)} with {format_car(selected_car)}.")
+            except Exception as e:
+                st.error(e)

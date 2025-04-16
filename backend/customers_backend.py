@@ -11,4 +11,10 @@ def add_customer(fName, lName, phoneNumber):
         "custphonenumber":phoneNumber
         }).execute()
     return response
-    
+
+def cust_with_car(customer : int, car : int):
+     response = supabase.table("ownership").insert({
+        "cust_id":customer,
+        "car_id":car
+        }).execute()
+     return response

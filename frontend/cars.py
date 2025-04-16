@@ -1,29 +1,56 @@
 import streamlit as st
+from backend.customers_backend import get_customers, cust_with_car
+from backend.cars_backend import get_cars, get_makes, get_models, add_car
+from frontend.utils import format_license_plate, format_customer, format_car
+import pandas as pd
+
 
 def render():
-    st.title("🚗 Cars Page")
+    if 'selected_make' not in st.session_state:
+        st.session_state.selected_make = None
 
+    st.title("🚗 Cars Page")
     st.subheader("🔍 View Cars")
+    customer_list = get_customers()
+    car_list = get_cars()
     if st.button("Load Cars"):
-        st.info("Would load all cars and display in a table.")
+        df = pd.DataFrame(car_list)
+        df = df.rename(columns={
+            "licenseplate": "License Plate",
+            "modelname": "Model",
+            "makename": "Make"
+        }).drop(columns=['car_id', 'modelid', 'makeid'])
+        st.dataframe(df, hide_index=True)
+
 
     st.subheader("➕ Add Car")
-    with st.form("add_car"):
-        plate = st.text_input("License Plate")
-        make = st.text_input("Make")
-        model = st.text_input("Model")
-        submitted = st.form_submit_button("Add")
-        if submitted:
-            st.success("Car would be added.")
 
-    st.subheader("🔗 Associate Car with Customer")
+    plate = st.text_input("License Plate")
+    plate = format_license_plate(plate)
+    makes  = get_makes()
+    selected_make = st.selectbox("Select Make", makes, format_func=lambda x: f'{x['makename']}')
+    st.session_state.selected_make = selected_make['makeid']
+    models = get_models(selected_make['makeid'])
+    selected_model = st.selectbox("Select Model",models, format_func=lambda x: f'{x['modelname']}')
+    
+    if st.button("Submit"):
+        if plate and selected_make and selected_model:
+            try:
+                add_car(plate,selected_make['makeid'], selected_model['modelid'])
+                st.success(f'New {selected_make['makename']} {selected_model['modelname']} added to our database')
+            except Exception as e:
+                st.error(e)
+        else:
+            st.warning('Must fill out all fields')
 
-    customer_list = ["1: John Doe", "2: Jane Smith"]
-    car_list = ["10: ABC123 - Honda Civic", "11: XYZ789 - Toyota Camry"]
+
+    st.subheader("🔗 Associate Car with Owner")
+
+   
 
     with st.form("link_car_customer"):
-        selected_car = st.selectbox("Select Car", car_list)
-        selected_customer = st.selectbox("Select Customer", customer_list)
+        selected_car = st.selectbox("Select Car", car_list, format_func=format_car)
+        selected_customer = st.selectbox("Select Customer", customer_list, format_func=format_customer)
         linked = st.form_submit_button("Link")
         if linked:
-            st.success(f"Linked {selected_car} with {selected_customer}.")
+            st.success(f"Linked {format_customer(selected_customer)} with {selected_car}.")
