@@ -6,6 +6,10 @@ from frontend.utils import format_name, format_service, format_tech
 
 def render():
     st.title("🧑‍🔧 Technicians Page")
+    
+    if st.button("🔁 Refresh"):
+        st.rerun()
+
     tech_list = get_technicians()
     service_list = get_services()
     st.subheader("🔍 View Technicians")
@@ -27,7 +31,6 @@ def render():
                     st.success(f"Successfully added {first} {last} to our database")
                 except Exception as e:
                     st.error(e)
-            st.success("Technician would be added.")
 
     st.subheader("🔗 Associate Technician with Service")
 

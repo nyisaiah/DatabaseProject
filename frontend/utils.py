@@ -18,4 +18,4 @@ def format_tech(tech :dict):
     return f'{tech["techfname"]} {tech["techlname"]}'
 
 def format_service(service :dict):
-    return f'{service["servicename"]}: ${service["serviceprice"]:.2f}'
+    return f'{service["servicename"]} - ${service["serviceprice"]:.2f}'

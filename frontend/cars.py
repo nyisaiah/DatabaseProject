@@ -6,13 +6,21 @@ import pandas as pd
 
 
 def render():
+    # Globals
+    customer_list = get_customers()
+    car_list = get_cars()
+
+    if st.button("🔁 Refresh"):
+        st.rerun()
+
+    # Track Selected make
     if 'selected_make' not in st.session_state:
         st.session_state.selected_make = None
 
     st.title("🚗 Cars Page")
     st.subheader("🔍 View Cars")
-    customer_list = get_customers()
-    car_list = get_cars()
+    
+    # Logic to load cars. Used a pandas dataframe
     if st.button("Load Cars"):
         df = pd.DataFrame(car_list)
         df = df.rename(columns={
@@ -25,6 +33,7 @@ def render():
 
     st.subheader("➕ Add Car")
 
+    # Logic to add a car
     plate = st.text_input("License Plate")
     plate = format_license_plate(plate)
     makes  = get_makes()
@@ -47,10 +56,14 @@ def render():
     st.subheader("🔗 Associate Car with Owner")
 
    
-
+    # Logic to associate car with customer
     with st.form("link_car_customer"):
         selected_car = st.selectbox("Select Car", car_list, format_func=format_car)
         selected_customer = st.selectbox("Select Customer", customer_list, format_func=format_customer)
         linked = st.form_submit_button("Link")
         if linked:
-            st.success(f"Linked {format_customer(selected_customer)} with {selected_car}.")
+            try: 
+                cust_with_car(selected_customer["cust_id"],selected_car["car_id"])
+                st.success(f"Linked {format_customer(selected_customer)} with {format_car(selected_car)}.")
+            except Exception as e:
+                st.error(e)

@@ -9,6 +9,9 @@ def render():
     service_list = get_services()
     tech_list = get_technicians()
 
+    if st.button("🔁 Refresh"):
+        st.rerun()
+
     st.title("🧾 Services Page")
 
     st.subheader("🔍 View Services")
@@ -32,7 +35,7 @@ def render():
                 name = format_name(name)
                 try:
                     add_service(name, price)
-                    st.success(f"Added new service {name} for {price}")
+                    st.success(f"Added new service {name} for {price:.2f}")
                 except Exception as e:
                     st.error(e)
                 

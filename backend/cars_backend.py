@@ -23,6 +23,3 @@ def add_car(licenseplate, makeid, modelid):
     response = supabase.table("cars").insert(data).execute()
     return response
 
-df = pd.DataFrame(get_cars())
-print(df)
-
