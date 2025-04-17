@@ -20,9 +20,7 @@ def add_car(licenseplate, makeid, modelid):
         "makeid": makeid,
         "modelid": modelid
     }
-    print("🛠️ About to insert into cars:", data)
     response = supabase.table("cars").insert(data).execute()
-    print("📤 Insert response:", response)
     return response
 
 df = pd.DataFrame(get_cars())

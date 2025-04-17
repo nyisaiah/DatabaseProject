@@ -13,3 +13,9 @@ def format_customer(customer : dict):
 
 def format_car(car : dict):
     return f'{car['licenseplate']}, {car['makename']} {car['modelname']}'
+
+def format_tech(tech :dict):
+    return f'{tech["techfname"]} {tech["techlname"]}'
+
+def format_service(service :dict):
+    return f'{service["servicename"]}: ${service["serviceprice"]:.2f}'
