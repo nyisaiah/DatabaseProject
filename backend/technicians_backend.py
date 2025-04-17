@@ -1,7 +1,7 @@
 from .supabase_client import supabase
 
 def add_technician(fname, lname):
-    response = supabase.table('services').insert({
+    response = supabase.table('technicians').insert({
         'techfname': fname,
         'techlname': lname
         }).execute()

@@ -1,11 +1,18 @@
 import streamlit as st
+import pandas as pd
+from backend.services_backend import get_services
+from backend.technicians_backend import get_technicians, tech_with_service, add_technician
+from frontend.utils import format_name, format_service, format_tech
 
 def render():
     st.title("🧑‍🔧 Technicians Page")
-
+    tech_list = get_technicians()
+    service_list = get_services()
     st.subheader("🔍 View Technicians")
     if st.button("Load Technicians"):
-        st.info("Would display all technicians.")
+        df = pd.DataFrame(tech_list)
+        df = df.drop(columns=['techid']).rename(columns={'techfname':'First Name','techlname':'Last Name'})
+        st.dataframe(df, hide_index=True)
 
     st.subheader("➕ Add Technician")
     with st.form("add_tech"):
@@ -13,16 +20,25 @@ def render():
         last = st.text_input("Last Name")
         submitted = st.form_submit_button("Add")
         if submitted:
+            if first and last:
+                first, last = format_name(first), format_name(last)
+                try:
+                    add_technician(first,last)
+                    st.success(f"Successfully added {first} {last} to our database")
+                except Exception as e:
+                    st.error(e)
             st.success("Technician would be added.")
 
     st.subheader("🔗 Associate Technician with Service")
 
-    tech_list = ["5: Mike Johnson", "6: Linda Lee"]
-    service_list = ["101: Oil Change", "102: Tire Rotation"]
-
     with st.form("link_tech_service"):
-        selected_tech = st.selectbox("Select Technician", tech_list)
-        selected_service = st.selectbox("Select Service", service_list)
+        selected_tech = st.selectbox("Select Technician", tech_list, format_func=format_tech)
+        selected_service = st.selectbox("Select Service", service_list, format_func=format_service)
         linked = st.form_submit_button("Link")
         if linked:
-            st.success(f"Linked {selected_tech} with {selected_service}.")
+            if selected_service and selected_tech:
+                try:
+                    tech_with_service(selected_tech['techid'], selected_service['serviceid'])
+                    st.success(f"Linked {format_service(selected_service)} with {format_tech(selected_tech)}.")
+                except Exception as e:
+                    st.error(e)
