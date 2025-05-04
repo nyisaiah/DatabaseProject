@@ -12,9 +12,10 @@ def add_customer(fName, lName, phoneNumber):
         }).execute()
     return response
 
-def cust_with_car(customer : int, car : int):
-     response = supabase.table("ownership").insert({
-        "cust_id":customer,
-        "car_id":car
-        }).execute()
-     return response
+def cust_with_car(customer: int, car: int):
+    try:
+        supabase.rpc("associate_customer", {'cust_id': customer, 'car_id': car}).execute()
+        return 1
+    except Exception as e:
+        print(e)
+        return 0
